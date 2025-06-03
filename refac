@@ -1,0 +1,97 @@
+#!python
+
+from typing import cast 
+from args import create_parser, parse_config
+from config import MoveClassConfig, MoveFuncConfig, RefactorAction, RefactorConfig, RenameModuleConfig
+from logger.logger import (
+    IChangeLogger,
+    ConsoleChangeLogger,
+    MockChangeLogger
+)
+
+from executor.executor import (
+    IChangeExecutor,
+    ChangeExecutor,
+    MockChangeExecutor
+)
+
+from change import (
+    create_move_function_changes,
+    create_move_class_changes,
+    create_move_module_changes
+)
+
+from rope.base.change import ChangeSet
+from rope.base.project import Project 
+
+
+
+def get_logger_for_config(config: RefactorConfig) -> IChangeLogger:
+    if config.is_verbose or config.is_dry_run:
+        return ConsoleChangeLogger()
+    return MockChangeLogger()
+
+
+def get_executor_for_config(config: RefactorConfig) -> IChangeExecutor:
+    if config.is_dry_run:
+        return MockChangeExecutor()
+    return ChangeExecutor()
+
+
+def get_change_set_for_config(
+    project: Project,
+    config: RefactorConfig
+) -> ChangeSet:
+    if config.action == RefactorAction.RENAME_MODULE:
+        rename_args: RenameModuleConfig = cast(RenameModuleConfig, config.config)
+        return create_move_module_changes(
+            project,
+            rename_args.source,
+            rename_args.dest
+        )
+    elif config.action == RefactorAction.MOVE_FUNC:
+        move_func_args: MoveFuncConfig = cast(MoveFuncConfig, config.config)
+        return create_move_function_changes(
+            project,
+            move_func_args.source,
+            move_func_args.func_name,
+            move_func_args.dest
+        )
+    elif config.action == RefactorAction.MOVE_CLASS:
+        move_class_args: MoveClassConfig = cast(MoveClassConfig, config.config)
+        return create_move_class_changes(
+            project,
+            move_class_args.source,
+            move_class_args.class_name,
+            move_class_args.dest
+        )
+    raise ValueError("Unknown refactor action")
+
+
+def apply_changes(
+    project: Project,
+    changes: ChangeSet,
+    logger: IChangeLogger,
+    executor: IChangeExecutor
+) -> None:
+    logger.log_changes(changes)
+    executor.execute(project, changes)
+
+
+def main():
+    config = parse_config(create_parser())
+    change_logger = get_logger_for_config(config)
+    change_executor = get_executor_for_config(config)
+    project = Project(".")
+    changes = get_change_set_for_config(project, config)
+    apply_changes(
+        project,
+        changes,
+        change_logger,
+        change_executor,
+    )
+
+
+if __name__ == "__main__":
+    main()
+

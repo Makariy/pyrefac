@@ -1,0 +1,14 @@
+from rope.base.change import ChangeSet
+from rope.base.project import Project 
+from rope.refactor.rename import Rename 
+
+
+def create_move_module_changes(
+    project: Project,
+    path: str,
+    new_module: str
+) -> ChangeSet:
+    resource = project.get_resource(path)
+    rename = Rename(project, resource)
+    return rename.get_changes(new_module.removesuffix(".py"))
+
