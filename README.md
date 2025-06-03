@@ -2,10 +2,10 @@
 # Refac 
 Simple tool for Python refactoring. \
 Supports:
--[x] Module renaming
--[x] Moving functions
--[x] Moving classes
--[x] Correcting imports after all the refactoring
+- [x] Module renaming
+- [x] Moving functions
+- [x] Moving classes
+- [x] Correcting imports after all the refactoring
 
 ---
 
