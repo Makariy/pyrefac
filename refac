@@ -1,4 +1,4 @@
-#!python
+#!/usr/bin/env python
 
 from typing import cast 
 from args import create_parser, parse_config

@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+from argparse import Action, ArgumentParser
 from config import (
     RefactorConfig,
     RefactorAction,
@@ -6,6 +6,20 @@ from config import (
     MoveClassConfig,
     MoveFuncConfig
 )
+
+
+def _try_add_autocomplete(
+    parser: ArgumentParser,
+    file_args: list[Action]
+) -> None:
+    try:
+        from argcomplete import autocomplete, completers
+    except:
+        return 
+
+    autocomplete(parser)
+    for arg in file_args:
+        arg.completer = completers.FilesCompleter()
 
 
 def create_parser() -> ArgumentParser:
@@ -25,21 +39,24 @@ def create_parser() -> ArgumentParser:
         help="Print changes that will be applied"
     )
     
+    file_args: list[Action] = []
     subparsers = parser.add_subparsers(dest="action", required=True, help="Action to perform")
 
     rename = subparsers.add_parser("rename-module", help="Rename a module. Note: could be either file or directory")
-    rename.add_argument("source", help="Source path")
-    rename.add_argument("dest", help="Destination path")
+    file_args.append(rename.add_argument("source", help="Source path"))
+    file_args.append(rename.add_argument("dest", help="Destination path"))
 
     move_class = subparsers.add_parser("move-class", help="Move a class to another file")
-    move_class.add_argument("source", help="Source filename")
+    file_args.append(move_class.add_argument("source", help="Source filename"))
     move_class.add_argument("class_name", help="Class name to move")
-    move_class.add_argument("dest", help="Destination filename")
+    file_args.append(move_class.add_argument("dest", help="Destination filename"))
 
     move_func = subparsers.add_parser("move-func", help="Move a function to another file")
-    move_func.add_argument("source", help="Source filename")
+    file_args.append(move_func.add_argument("source", help="Source filename"))
     move_func.add_argument("func_name", help="Function name to move")
-    move_func.add_argument("dest", help="Destination filename")
+    file_args.append(move_func.add_argument("dest", help="Destination filename"))
+
+    _try_add_autocomplete(parser, file_args)
 
     return parser
 

@@ -48,4 +48,17 @@ refac move-class <source-filename> <class-name> <dest-filename>
 
 #### Note: all the imports are corrected after refactoring!
 
+### Autocompletition
+You can install autocompletition for the refactoring such as the action to perform 
+(move-class, move-func, ...) and the positional arguments such as the source/dest filenames.
+```{bash}
+python3 -m pip install argcomplete
+activate-global-python-argcomplete
+echo '\
+eval "$(register-python-argcomplete refac)"\n \
+autoload -U bashcompinit\n \
+bashcompinit\n \
+' >> ~/.zshrc
+```
+And restart your shell
 
