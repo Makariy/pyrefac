@@ -19,7 +19,6 @@ def create_move_symbol_changes(
     changes.add_change(CreateFileIfNotExistsChange(project, dest_path))
 
     module: PyModule = cast(PyModule, project.get_module(path_to_module(src_path)))
-
     offset = get_offset_for_symbol(module, symbol_name)
 
     move = MoveGlobal(project, module.get_resource(), offset)

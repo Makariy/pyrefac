@@ -15,6 +15,10 @@ def module_to_path(module: str) -> str:
     return module.replace(".", "/") + ".py"
 
 
+def remove_extension(path: str) -> str:
+    return path.removesuffix(".py")
+
+
 def _create_project_file(project: Project, filename: str) -> None:
     path = os.path.join(project.root.path, filename)
     with open(path, "w") as f:

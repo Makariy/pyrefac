@@ -3,8 +3,8 @@ from enum import Enum
 
 
 class RefactorAction(Enum):
-    MOVE_SYMBOL = "move-symbol"
     RENAME_MODULE = "rename-module"
+    MOVE_SYMBOL = "move-symbol"
 
 
 @dataclass
@@ -26,4 +26,5 @@ class RefactorConfig:
     config: RenameModuleConfig | MoveSymbolConfig
     is_dry_run: bool
     is_verbose: bool
+    project_root: str
 

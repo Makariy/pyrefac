@@ -85,3 +85,4 @@ def get_module_symbols(tree: ast.Module) -> set[str]:
             symbols.add(node.name)
 
     return symbols
+

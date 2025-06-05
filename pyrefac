@@ -1,4 +1,5 @@
-#!/home/makariy/code/python-refactor/.venv/bin/python
+#!/usr/bin/env python
+import os
 from typing import cast
 from args import create_parser, parse_config
 from config import MoveSymbolConfig, RefactorAction, RefactorConfig, RenameModuleConfig
@@ -53,7 +54,7 @@ def main():
     config = parse_config(create_parser())
     change_logger = get_logger_for_config(config)
     change_executor = get_executor_for_config(config)
-    project = Project(".")
+    project = Project(config.project_root)
     changes = get_change_set_for_config(project, config)
     apply_changes(
         project,
