@@ -34,30 +34,24 @@ You can rename a module
 refac rename-module <old-filename> <new-filename>
 ```
 
-Or move a function from one file to another
+Or move global function/class/variable from one file to another
 ```{bash}
 # Move function from one file to another 
-refac move-func <source-filename> <function-name> <dest-filename>
-```
-
-Or even a class
-```{bash}
-# Move class from one file to another
-refac move-class <source-filename> <class-name> <dest-filename>
+refac move-symbol <source-filename> <symbol-name> <dest-filename>
 ```
 
 #### Note: all the imports are corrected after refactoring!
 
 ### Autocompletition
 You can install autocompletition for the refactoring such as the action to perform 
-(move-class, move-func, ...) and the positional arguments such as the source/dest filenames.
+(move-symbol, rename-module, ...) and the positional arguments such as the source/dest filenames.
 ```{bash}
 python3 -m pip install argcomplete
 activate-global-python-argcomplete
-echo '\
-eval "$(register-python-argcomplete refac)"\n \
-autoload -U bashcompinit\n \
-bashcompinit\n \
+echo '
+eval "$(register-python-argcomplete refac)"
+autoload -U bashcompinit
+bashcompinit
 ' >> ~/.zshrc
 ```
 And restart your shell

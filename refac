@@ -1,29 +1,15 @@
-#!/usr/bin/env python
-
-from typing import cast 
+#!/home/makariy/code/python-refactor/.venv/bin/python
+from typing import cast
 from args import create_parser, parse_config
-from config import MoveClassConfig, MoveFuncConfig, RefactorAction, RefactorConfig, RenameModuleConfig
-from logger.logger import (
-    IChangeLogger,
-    ConsoleChangeLogger,
-    MockChangeLogger
-)
+from config import MoveSymbolConfig, RefactorAction, RefactorConfig, RenameModuleConfig
+from logger.logger import IChangeLogger, ConsoleChangeLogger, MockChangeLogger
 
-from executor.executor import (
-    IChangeExecutor,
-    ChangeExecutor,
-    MockChangeExecutor
-)
+from executor.executor import IChangeExecutor, ChangeExecutor, MockChangeExecutor
 
-from change import (
-    create_move_function_changes,
-    create_move_class_changes,
-    create_move_module_changes
-)
+from change import create_move_symbol_changes, create_move_module_changes
 
 from rope.base.change import ChangeSet
-from rope.base.project import Project 
-
+from rope.base.project import Project
 
 
 def get_logger_for_config(config: RefactorConfig) -> IChangeLogger:
@@ -38,32 +24,17 @@ def get_executor_for_config(config: RefactorConfig) -> IChangeExecutor:
     return ChangeExecutor()
 
 
-def get_change_set_for_config(
-    project: Project,
-    config: RefactorConfig
-) -> ChangeSet:
+def get_change_set_for_config(project: Project, config: RefactorConfig) -> ChangeSet:
     if config.action == RefactorAction.RENAME_MODULE:
         rename_args: RenameModuleConfig = cast(RenameModuleConfig, config.config)
-        return create_move_module_changes(
-            project,
-            rename_args.source,
-            rename_args.dest
-        )
-    elif config.action == RefactorAction.MOVE_FUNC:
-        move_func_args: MoveFuncConfig = cast(MoveFuncConfig, config.config)
-        return create_move_function_changes(
+        return create_move_module_changes(project, rename_args.source, rename_args.dest)
+    elif config.action == RefactorAction.MOVE_SYMBOL:
+        move_func_args: MoveSymbolConfig = cast(MoveSymbolConfig, config.config)
+        return create_move_symbol_changes(
             project,
             move_func_args.source,
-            move_func_args.func_name,
-            move_func_args.dest
-        )
-    elif config.action == RefactorAction.MOVE_CLASS:
-        move_class_args: MoveClassConfig = cast(MoveClassConfig, config.config)
-        return create_move_class_changes(
-            project,
-            move_class_args.source,
-            move_class_args.class_name,
-            move_class_args.dest
+            move_func_args.symbol,
+            move_func_args.dest,
         )
     raise ValueError("Unknown refactor action")
 
@@ -72,7 +43,7 @@ def apply_changes(
     project: Project,
     changes: ChangeSet,
     logger: IChangeLogger,
-    executor: IChangeExecutor
+    executor: IChangeExecutor,
 ) -> None:
     logger.log_changes(changes)
     executor.execute(project, changes)
