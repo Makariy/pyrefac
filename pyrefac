@@ -1,6 +1,11 @@
 #!/usr/bin/env python
-import os
 from typing import cast
+from pathlib import Path
+import sys 
+
+# Need to use rope from git submodule, so adding that directory to pythonpath 
+sys.path.insert(0, str(Path(__file__).parent / "rope"))
+
 from args import create_parser, parse_config
 from config import MoveSymbolConfig, RefactorAction, RefactorConfig, RenameModuleConfig
 from logger.logger import IChangeLogger, ConsoleChangeLogger, MockChangeLogger
@@ -10,7 +15,10 @@ from executor.executor import IChangeExecutor, ChangeExecutor, MockChangeExecuto
 from change import create_move_symbol_changes, create_move_module_changes
 
 from rope.base.change import ChangeSet
+from rope.base.prefs import ImportPrefs
 from rope.base.project import Project
+
+
 
 
 def get_logger_for_config(config: RefactorConfig) -> IChangeLogger:
@@ -54,7 +62,13 @@ def main():
     config = parse_config(create_parser())
     change_logger = get_logger_for_config(config)
     change_executor = get_executor_for_config(config)
-    project = Project(config.project_root)
+    project = Project(
+        config.project_root,
+        imports=ImportPrefs(
+            preferred_import_style="from-global"
+        )
+    )
+    
     changes = get_change_set_for_config(project, config)
     apply_changes(
         project,
