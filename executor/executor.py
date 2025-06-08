@@ -21,5 +21,3 @@ class ChangeExecutor(IChangeExecutor):
     @override
     def execute(self, project: Project, changes: ChangeSet) -> None:
         project.do(changes)
-
-

@@ -26,5 +26,5 @@ class RefactorConfig:
     config: RenameModuleConfig | MoveSymbolConfig
     is_dry_run: bool
     is_verbose: bool
+    show_files: bool
     project_root: str
-

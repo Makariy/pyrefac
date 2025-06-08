@@ -1,6 +1,6 @@
 
 # Pyrefac 
-Simple tool for Python refactoring. \
+Simple tool based on rope for Python refactoring. \
 Supports:
 - [x] Module renaming
 - [x] Moving functions
@@ -13,7 +13,6 @@ Supports:
 ## Installation 
 ```{bash} 
 git clone git@github.com:Makariy/pyrefac.git 
-python3 -m pip install rope  
 ```
 
 And add pyrefac to you path 

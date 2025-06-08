@@ -33,10 +33,11 @@ def create_parser() -> ArgumentParser:
     )
 
     parser.add_argument(
-        "-p",
-        "--project-root",
-        default=".",
-        help="Sets the project root"
+        "-p", "--project-root", default=".", help="Sets the project root"
+    )
+
+    parser.add_argument(
+        "-s", "--show-files", action="store_true", help="Show files that will change"
     )
 
     file_args: list[Action] = []
@@ -44,9 +45,7 @@ def create_parser() -> ArgumentParser:
         dest="action", required=True, help="Action to perform"
     )
 
-    rename = subparsers.add_parser(
-        "rename-module", help="Rename a module."
-    )
+    rename = subparsers.add_parser("rename-module", help="Rename a module.")
     file_args.append(rename.add_argument("source", help="Source path"))
     file_args.append(rename.add_argument("dest", help="New filename"))
 
@@ -84,6 +83,6 @@ def parse_config(parser: ArgumentParser) -> RefactorConfig:
         config=config,
         is_dry_run=args.dry_run,
         is_verbose=args.verbose,
-        project_root=args.project_root
+        show_files=args.show_files,
+        project_root=args.project_root,
     )
-

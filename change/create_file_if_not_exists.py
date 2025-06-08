@@ -18,7 +18,6 @@ class CreateFileIfNotExistsChange(Change):
     def undo(self, job_set=None):
         raise NotImplementedError
 
-    @override 
+    @override
     def get_description(self):
-        return f"Create file {self._path}" 
-
+        return f"Create file {self._path}"

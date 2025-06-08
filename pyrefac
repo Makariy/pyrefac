@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 from typing import cast
 from pathlib import Path
 import sys 
@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent / "rope"))
 
 from args import create_parser, parse_config
 from config import MoveSymbolConfig, RefactorAction, RefactorConfig, RenameModuleConfig
-from logger.logger import IChangeLogger, ConsoleChangeLogger, MockChangeLogger
+from logger.logger import FilesChangeLogger, IChangeLogger, ConsoleChangeLogger, MockChangeLogger
 
 from executor.executor import IChangeExecutor, ChangeExecutor, MockChangeExecutor
 
@@ -22,6 +22,8 @@ from rope.base.project import Project
 
 
 def get_logger_for_config(config: RefactorConfig) -> IChangeLogger:
+    if config.show_files:
+        return FilesChangeLogger()
     if config.is_verbose or config.is_dry_run:
         return ConsoleChangeLogger()
     return MockChangeLogger()
@@ -64,6 +66,7 @@ def main():
     change_executor = get_executor_for_config(config)
     project = Project(
         config.project_root,
+        ropefolder=None,
         imports=ImportPrefs(
             preferred_import_style="from-global"
         )

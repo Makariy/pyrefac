@@ -10,10 +10,7 @@ from .create_file_if_not_exists import CreateFileIfNotExistsChange
 
 
 def create_move_symbol_changes(
-    project: Project,
-    src_path: str,
-    symbol_name: str,
-    dest_path: str
+    project: Project, src_path: str, symbol_name: str, dest_path: str
 ) -> ChangeSet:
     changes = ChangeSet("Move symbols")
     changes.add_change(CreateFileIfNotExistsChange(project, dest_path))
@@ -25,4 +22,3 @@ def create_move_symbol_changes(
     changes.add_change(move.get_changes(path_to_module(dest_path)))
 
     return changes
-
