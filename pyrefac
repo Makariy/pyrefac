@@ -19,8 +19,6 @@ from rope.base.prefs import ImportPrefs
 from rope.base.project import Project
 
 
-
-
 def get_logger_for_config(config: RefactorConfig) -> IChangeLogger:
     if config.show_files:
         return FilesChangeLogger()
@@ -69,7 +67,8 @@ def main():
         ropefolder=None,
         imports=ImportPrefs(
             preferred_import_style="from-global"
-        )
+        ),
+        ignored_resources=config.excluded_files
     )
     
     changes = get_change_set_for_config(project, config)

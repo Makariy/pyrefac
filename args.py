@@ -7,6 +7,21 @@ from config import (
 )
 
 
+EXCLUDED_FILES = [
+    "*.pyc",
+    "*~",
+    ".ropeproject",
+    ".hg",
+    ".svn",
+    "_svn",
+    ".git",
+    ".tox",
+    ".venv",
+    "venv",
+    ".mypy_cache",
+    ".pytest_cache"
+]
+
 def _try_add_autocomplete(parser: ArgumentParser, file_args: list[Action]) -> None:
     try:
         from argcomplete import autocomplete, completers
@@ -40,6 +55,10 @@ def create_parser() -> ArgumentParser:
         "-s", "--show-files", action="store_true", help="Show files that will change"
     )
 
+    parser.add_argument(
+        "-e", "--exclude", action="append", default=[], help="Excluded files/directories"
+    )
+
     file_args: list[Action] = []
     subparsers = parser.add_subparsers(
         dest="action", required=True, help="Action to perform"
@@ -63,6 +82,7 @@ def create_parser() -> ArgumentParser:
 
 def parse_config(parser: ArgumentParser) -> RefactorConfig:
     args = parser.parse_args()
+    args.exclude += EXCLUDED_FILES
     action = RefactorAction(args.action)
     if action == RefactorAction.RENAME_MODULE:
         config = RenameModuleConfig(
@@ -85,4 +105,5 @@ def parse_config(parser: ArgumentParser) -> RefactorConfig:
         is_verbose=args.verbose,
         show_files=args.show_files,
         project_root=args.project_root,
+        excluded_files=args.exclude
     )

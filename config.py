@@ -28,3 +28,5 @@ class RefactorConfig:
     is_verbose: bool
     show_files: bool
     project_root: str
+    excluded_files: list[str]
+
