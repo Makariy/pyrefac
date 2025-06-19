@@ -3,14 +3,9 @@ from enum import Enum
 
 
 class RefactorAction(Enum):
-    RENAME_MODULE = "rename-module"
     MOVE_SYMBOL = "move-symbol"
-
-
-@dataclass
-class RenameModuleConfig:
-    source: str
-    dest: str
+    RENAME_MODULE = "rename-module"
+    MOVE_MODULE = "move-module"
 
 
 @dataclass
@@ -21,9 +16,21 @@ class MoveSymbolConfig:
 
 
 @dataclass
+class RenameModuleConfig:
+    source: str
+    dest: str
+
+
+@dataclass 
+class MoveModuleConfig:
+    source: str 
+    dest: str
+
+
+@dataclass
 class RefactorConfig:
     action: RefactorAction
-    config: RenameModuleConfig | MoveSymbolConfig
+    config: RenameModuleConfig | MoveSymbolConfig | MoveModuleConfig
     is_dry_run: bool
     is_verbose: bool
     show_files: bool

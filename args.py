@@ -1,5 +1,6 @@
 from argparse import Action, ArgumentParser
 from config import (
+    MoveModuleConfig,
     RefactorConfig,
     RefactorAction,
     RenameModuleConfig,
@@ -68,12 +69,18 @@ def create_parser() -> ArgumentParser:
     file_args.append(rename.add_argument("source", help="Source path"))
     file_args.append(rename.add_argument("dest", help="New filename"))
 
-    move_symbols = subparsers.add_parser(
+    move_symbol = subparsers.add_parser(
         "move-symbol", help="Move a symbol to another file"
     )
-    file_args.append(move_symbols.add_argument("source", help="Source path"))
-    move_symbols.add_argument("symbol", help="Symbols to move")
-    file_args.append(move_symbols.add_argument("dest", help="Destination path"))
+    file_args.append(move_symbol.add_argument("source", help="Source path"))
+    move_symbol.add_argument("symbol", help="Symbols to move")
+    file_args.append(move_symbol.add_argument("dest", help="Destination path"))
+
+    move_module = subparsers.add_parser(
+        "move-module", help="Move a module to another package"
+    )
+    file_args.append(move_module.add_argument("source", help="Source path"))
+    file_args.append(move_module.add_argument("dest", help="Destination path"))
 
     _try_add_autocomplete(parser, file_args)
 
@@ -94,6 +101,11 @@ def parse_config(parser: ArgumentParser) -> RefactorConfig:
             source=args.source,
             symbol=args.symbol,
             dest=args.dest,
+        )
+    elif action == RefactorAction.MOVE_MODULE:
+        config = MoveModuleConfig(
+            source=args.source,
+            dest=args.dest
         )
     else:
         raise ValueError(f"Unsupported action: {action}")

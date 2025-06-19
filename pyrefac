@@ -7,12 +7,16 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent / "rope"))
 
 from args import create_parser, parse_config
-from config import MoveSymbolConfig, RefactorAction, RefactorConfig, RenameModuleConfig
+from config import MoveModuleConfig, MoveSymbolConfig, RefactorAction, RefactorConfig, RenameModuleConfig
 from logger.logger import FilesChangeLogger, IChangeLogger, ConsoleChangeLogger, MockChangeLogger
 
 from executor.executor import IChangeExecutor, ChangeExecutor, MockChangeExecutor
 
-from change import create_move_symbol_changes, create_move_module_changes
+from change import (
+    create_move_symbol_changes,
+    create_rename_module_changes,
+    create_move_module_changes
+)
 
 from rope.base.change import ChangeSet
 from rope.base.prefs import ImportPrefs
@@ -34,16 +38,27 @@ def get_executor_for_config(config: RefactorConfig) -> IChangeExecutor:
 
 
 def get_change_set_for_config(project: Project, config: RefactorConfig) -> ChangeSet:
-    if config.action == RefactorAction.RENAME_MODULE:
-        rename_args: RenameModuleConfig = cast(RenameModuleConfig, config.config)
-        return create_move_module_changes(project, rename_args.source, rename_args.dest)
-    elif config.action == RefactorAction.MOVE_SYMBOL:
+    if config.action == RefactorAction.MOVE_SYMBOL:
         move_func_args: MoveSymbolConfig = cast(MoveSymbolConfig, config.config)
         return create_move_symbol_changes(
             project,
             move_func_args.source,
             move_func_args.symbol,
             move_func_args.dest,
+        )
+    if config.action == RefactorAction.RENAME_MODULE:
+        rename_args: RenameModuleConfig = cast(RenameModuleConfig, config.config)
+        return create_rename_module_changes(
+            project,
+            rename_args.source,
+            rename_args.dest
+        )
+    if config.action == RefactorAction.MOVE_MODULE:
+        move_module_args: MoveModuleConfig = cast(MoveModuleConfig, config.config)
+        return create_move_module_changes(
+            project,
+            move_module_args.source,
+            move_module_args.dest
         )
     raise ValueError("Unknown refactor action")
 

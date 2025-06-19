@@ -2,10 +2,11 @@
 # Pyrefac 
 Simple tool based on rope for Python refactoring. \
 Supports:
-- [x] Module renaming
 - [x] Moving functions
 - [x] Moving classes
 - [x] Moving variables
+- [x] Module renaming
+- [x] Moving modules
 - [x] Correcting imports after all the refactoring
 
 ---
@@ -41,12 +42,25 @@ file, and the second is the new filename, not the new path)
 pyrefac rename-module <path-to-old-file> <new-filename>
 ```
 
+Move module. (Note that if the package does not exist, it would be created 
+automatically)
+```{bash}
+pyrefac move-module <path-to-file> <path-to-package>
+```
+
 See the help for more
 ```{bash}
 pyrefac -h 
 ```
 
 #### Note: all the imports are corrected after refactoring!
+
+## Issues:
+Sometimes you could get some error like this:
+`fatal: not under version control, source=<some-file-old-path>, destination=<some-new-file-path>`
+That is because rope uses different interfaces to execute the operations over the file system. 
+In case if you use git, you just need to add that `<some-file-old-path>` to the repository 
+(even temporary for the refactoring).
 
 ### Autocompletition
 You can install autocompletition for the refactoring such as the action to perform 
