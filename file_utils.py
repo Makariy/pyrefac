@@ -28,7 +28,7 @@ def _create_project_file(project: Project, filename: str) -> None:
 def _create_project_package(project: Project, directory: str) -> None:
     path = os.path.join(project.root.path, directory)
     os.mkdir(directory)
-    with open(os.path.join(path, "__init__.py")) as f:
+    with open(os.path.join(path, "__init__.py"), "w") as f:
         f.write("")
 
 
